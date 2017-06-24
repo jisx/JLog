@@ -19,7 +19,7 @@ android 日志
 
 如果传入的是自定义的对象，记得重写toString()方法。
 
-拓展：如果传入的对象是自定义的，则需要拓展。拓展需要继承 BaseLog，重写2个方法。parseToString和getStackTraceIndex
+拓展：需要继承 BaseLog，重写2个方法。parseToString和getStackTraceIndex
 
 
     @Override
