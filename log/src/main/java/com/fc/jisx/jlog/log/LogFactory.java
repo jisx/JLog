@@ -1,7 +1,8 @@
 package com.fc.jisx.jlog.log;
 
 
-import com.fc.jisx.jlog.JLogType;
+import com.fc.jisx.jlog.JBuilder;
+import com.fc.jisx.jlog.JLog;
 
 import java.util.HashMap;
 
@@ -11,17 +12,31 @@ import java.util.HashMap;
 
 public class LogFactory {
 
-    private static HashMap<JLogType, BaseLog> log;
+    private static HashMap<JLog, BaseLog> log;
 
-    static {
-        log = new HashMap<>();
-        log.put(JLogType.FILE, new FileLog());
-        log.put(JLogType.JSON, new JsonLog());
-        log.put(JLogType.XML, new XmlLog());
-        log.put(JLogType.TEXT, new TextLog());
-    }
+    public static BaseLog create(JLog type, JBuilder builder) {
+        if (log == null)
+            log = new HashMap<>();
 
-    public static BaseLog create(JLogType type) {
+        if (log.get(type) == null) {
+            switch (type) {
+                case JSON:
+                    log.put(JLog.JSON, new JsonLog(builder));
+                    break;
+
+                case TEXT:
+                    log.put(JLog.TEXT, new TextLog(builder));
+                    break;
+
+                case XML:
+                    log.put(JLog.XML, new XmlLog(builder));
+                    break;
+            }
+
+        }
+
+        log.get(type).setBuilder(builder);
+
         return log.get(type);
     }
 }

@@ -1,6 +1,9 @@
 package com.fc.jisx.jlog.log;
 
 
+import com.fc.jisx.jlog.JBuilder;
+import com.fc.jisx.jlog.JLog;
+
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -15,6 +18,10 @@ import javax.xml.transform.stream.StreamSource;
  * Created by zhaokaiqiang on 15/11/18.
  */
 public class XmlLog extends BaseLog {
+
+    public XmlLog(JBuilder builder) {
+        super(builder);
+    }
 
     private String formatXML(String inputXML) {
         try {
@@ -33,7 +40,7 @@ public class XmlLog extends BaseLog {
 
     @Override
     public String parseToString(Object object) {
-        return formatXML(object.toString());
+        return "\n" + formatXML(object.toString());
     }
 
 }

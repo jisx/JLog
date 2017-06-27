@@ -64,6 +64,12 @@
                 android:onClick="logXml"
                 android:text="Log.xml()" />
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="logWriteFile"
+                android:text="不可写入文件" />
+
         </LinearLayout>
     </ScrollView>
 

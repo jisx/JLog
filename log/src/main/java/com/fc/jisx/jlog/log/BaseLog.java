@@ -1,15 +1,16 @@
 package com.fc.jisx.jlog.log;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-
+import com.fc.jisx.jlog.JBuilder;
 import com.fc.jisx.jlog.JLogLevel;
-import com.fc.jisx.jlog.JLogUtil;
-import com.fc.jisx.jlog.RuntimeType;
 import com.fc.jisx.jlog.model.ParseToString;
 import com.fc.jisx.jlog.model.Print;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,9 +22,19 @@ public abstract class BaseLog implements Print, ParseToString {
 
     private static final String SUFFIX = ".java";
 
+    private JBuilder mBuilder;
+
+    public BaseLog(JBuilder builder) {
+        mBuilder = builder;
+    }
+
+    public int getStackTraceIndex(String tag) {
+        return tag == null ? 7 : 6;
+    }
+
     /**
      * 获取打印所在的类、行数和方法
-     *
+     * @param index 下标
      * @return 返回类名、方法和所在的行数
      */
     public String[] wrapperContent(int index) {
@@ -55,70 +66,77 @@ public abstract class BaseLog implements Print, ParseToString {
         return strings;
     }
 
-    public int getStackTraceIndex(String tag) {
-        return tag == null ? 7 : 6;
-    }
-
-    /**
-     * 打印
-     *
-     * @param runtimeType 运行的环境
-     * @param logLevel    日志级别
-     * @param tag         tag
-     * @param obj         具体的内容
-     */
     @Override
-    public void print(RuntimeType runtimeType, JLogLevel logLevel, String tag, Object obj) {
+    public void print(JLogLevel jLogLevel, String tag, Object object) {
 
-        String[] wrapperContent = wrapperContent(getStackTraceIndex(tag));
+        int index = 0;
+        String msg = parseToString(object);
+        int length = msg.length();
+        int maxLength = mBuilder.getMaxLength();
+        int countOfSub = length / maxLength;
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(wrapperContent[1]).append("\n");
-        stringBuilder.append(parseToString(obj)).append("\n");
-        printRuntimeType(runtimeType, logLevel, tag == null ? wrapperContent[0] : tag, stringBuilder.toString());
+        String[] strings = wrapperContent(getStackTraceIndex(tag));
+        if (countOfSub > 0) {
+            String sub;
+            for (int i = 0; i < countOfSub; i++) {
+                sub = msg.substring(index, index + maxLength);
+                if (i == 0) {
+                    printRuntimeType(jLogLevel, getTag(tag, strings[0]), strings[1] + "\n" + sub);
+                } else {
+                    printRuntimeType(jLogLevel, getTag(tag, strings[0]), sub);
+                }
+                index += maxLength;
+            }
+            printRuntimeType(jLogLevel, getTag(tag, strings[0]), msg.substring(index, length));
+        } else {
+            printRuntimeType(jLogLevel, getTag(tag, strings[0]), strings[1] + msg);
+        }
     }
 
-    /**
-     * 可以直接调用打印，不携带类名和方法名
-     *
-     * @param runtimeType 运行的环境
-     * @param logLevel    日志级别
-     * @param tag         tag
-     * @param str         要打印的字符串
-     */
-    public void print(RuntimeType runtimeType, JLogLevel logLevel, @NonNull String tag, String str) {
-        printRuntimeType(runtimeType, logLevel, tag, str);
+    public String getTag(String tag, String classTag) {
+        if (tag == null) {
+            if (mBuilder.getTag() != null && !"".equals(mBuilder.getTag())) {
+                return mBuilder.getTag();
+            }else {
+                return classTag;
+            }
+        }
+        return tag;
     }
 
-    /**
-     * 打印错误信息
-     *
-     * @param runtimeType 运行的环境
-     * @param tag         tag
-     * @param t           要打印的错误
-     */
-    public void printError(RuntimeType runtimeType, String tag, Throwable t) {
+    private void printRuntimeType(JLogLevel logLevel, String tag, String sub) {
 
-        String[] wrapperContent = wrapperContent(getStackTraceIndex(tag));
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(wrapperContent[1]).append("\n");
-        stringBuilder.append(JLogUtil.parseThrowableToString(t)).append("\n");
-        printRuntimeType(runtimeType, JLogLevel.ERROR, tag == null ? wrapperContent[0] : tag, stringBuilder.toString());
-    }
-
-    private void printRuntimeType(RuntimeType runtimeType, JLogLevel logLevel, String tag, String sub) {
-
-        switch (runtimeType) {
+        switch (mBuilder.getRuntimeType()) {
             case ANDROID:
                 printAndroidText(logLevel, tag, sub);
                 break;
             case JAVA:
                 printJavaText(logLevel, tag, sub);
                 break;
-            default:
-                printJavaText(logLevel, tag, sub);
-                break;
+        }
+
+        if (mBuilder.isWriteToFile()
+                && mBuilder.getParentFile() != null
+                && mBuilder.getFileName() != null
+                && mBuilder.getJLogLevel().getLevel() <= logLevel.getLevel())
+            saveToFile(logLevel, tag, mBuilder.getParentFile(), mBuilder.getFileName(), sub);
+
+
+    }
+
+    private void saveToFile(JLogLevel logLevel, String tag, File parentFile, String fileName, String sub) {
+        if (parentFile.exists()) {
+            try {
+                File file = new File(parentFile, fileName);
+                PrintStream p = new PrintStream(new BufferedOutputStream(new FileOutputStream(file, true)), true, "UTF-8");
+                p.write((sub + "\n").getBytes("UTF-8"));
+                p.close();
+            } catch (Throwable e) {
+                print(JLogLevel.ERROR, tag, "write to logfile error" + e.getMessage());
+            }
+
+        } else {
+            print(JLogLevel.ERROR, tag, "parentFile(logFile) not exist,create file first");
         }
     }
 
@@ -148,14 +166,14 @@ public abstract class BaseLog implements Print, ParseToString {
     private static void printJavaText(JLogLevel type, String tag, String sub) {
         Logger logger = Logger.getLogger(tag);
         logger.setLevel(Level.ALL);
-        if (logger.getHandlers().length == 0) {
-            // 输出到控制台
-            ConsoleHandler consoleHandler = new ConsoleHandler();
-            // 设置输出级别
-            consoleHandler.setLevel(Level.ALL);
-            logger.addHandler(consoleHandler);
-        }
-
         logger.log(Level.parse(type.toString()), sub);
+    }
+
+    /**
+     * 为了更新这个对象
+     * @param builder 里面放具体的参数
+     */
+    public void setBuilder(JBuilder builder) {
+        mBuilder = builder;
     }
 }

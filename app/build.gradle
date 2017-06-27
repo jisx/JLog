@@ -22,4 +22,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':log')
+//    compile 'com.jisx.log:JLog:1.0.0'
 }

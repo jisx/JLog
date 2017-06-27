@@ -14,6 +14,7 @@ android {
 
     lintOptions {
         abortOnError false
+        ignoreWarnings true
     }
 }
 
@@ -23,10 +24,10 @@ dependencies {
 }
 
 publish {
-    userOrg = 'jisx' //你的用户名
+    userOrg = 'jng' //你的用户名
     groupId = 'com.jisx.log' //你的唯一的groupId，对应com.squareup.okhttp3:okhttp:3.4.1中的com.squareup.okhttp3
-    artifactId = 'klog' //你的library的名字，对应com.squareup.okhttp3:okhttp:3.4.1中的okhttp
+    artifactId = 'JLog' //你的library的名字，对应com.squareup.okhttp3:okhttp:3.4.1中的okhttp
     publishVersion = '1.0.0' //版本号
-    desc = 'android 日志'
-    website = 'https://github.com/jisx/KLog' //建议填写github地址，不过不影响，这里做演示填的自己的网址
+    desc = 'android log Support Java environment'
+    website = 'https://github.com/jisx/JLog' //建议填写github地址，不过不影响，这里做演示填的自己的网址
 }
