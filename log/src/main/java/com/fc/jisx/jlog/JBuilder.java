@@ -15,7 +15,7 @@ public class JBuilder {
 
     private boolean isWriteToFile;
 
-    private JLogLevel mJLogLevel;
+    private JLogLevel mJLogLevelToFile;
 
     private File mParentFile;
 
@@ -28,7 +28,7 @@ public class JBuilder {
     public JBuilder() {
         this.isShowLog = true;
         this.isWriteToFile = false;
-        this.mJLogLevel = JLogLevel.ALL;
+        this.mJLogLevelToFile = JLogLevel.ALL;
         this.mParentFile = null;
         this.fileName = "";
         this.mRuntimeType = RuntimeType.JAVA;
@@ -54,12 +54,12 @@ public class JBuilder {
         return this;
     }
 
-    public JLogLevel getJLogLevel() {
-        return mJLogLevel;
+    public JLogLevel getJLogLevelToFile() {
+        return mJLogLevelToFile;
     }
 
-    public JBuilder setJLogLevel(JLogLevel JLogLevel) {
-        mJLogLevel = JLogLevel;
+    public JBuilder setJLogLevelToFile(JLogLevel JLogLevelToFile) {
+        mJLogLevelToFile = JLogLevelToFile;
         return this;
     }
 

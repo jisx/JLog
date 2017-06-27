@@ -5,22 +5,16 @@ android 日志
 重新整理了结构。新增了对java环境的支持
 
 使用：
-默认是在java环境中打印日志。
-切换：   
-
-        JLog.setRuntimeType(RuntimeType.ANDROID);//RuntimeType.JAVA
-
-
-注意：
-在使用JLog.file(),需要提前把文件夹和文件名指定好。
-        
-        JLog.setFile(Environment.getExternalStorageDirectory(),"log.txt");
-        JLog.file("打印测试");
-
-如果传入的是自定义的对象，记得重写toString()方法。
+        JBuilder jBuilder = new JBuilder();
+        jBuilder.setJLogLevelToFile(JLogLevelToFile.WARN);//设置打印到文件中的日志级别
+        jBuilder.setTag("main");//设置全局的tag, 优先级别：指定tag>全局tag。如果两者都没有指定，则直接定位到打印语句所在的类
+        jBuilder.setRuntimeType(RuntimeType.ANDROID);//设置在android环境下。有时候在android端使用java的mian方法，就需要切换成RuntimeType.JAVA环境
+        jBuilder.setWriteToFile(true);//需要把日志写到log中
+        jBuilder.setParentFile(Environment.getExternalStorageDirectory());//日志文件所在的文件夹
+        jBuilder.setFileName("test.txt");//日志文件的名字
+        JLog.setBuilder(jBuilder);
 
 拓展：需要继承 BaseLog，重写2个方法。parseToString和getStackTraceIndex
-
 
     @Override
     public String parseToString(Object obj) {
@@ -43,11 +37,13 @@ BaseLog 的wrapperContent  中 33行的代码的意思可以理解为，代码�
 
 记得在LogFactory中注册一下自定义的log
 
-    compile 'com.jisx.log:JLog:1.0.0'
+    dependencies {
+        compile 'org.greenrobot:greendao:3.2.2' // add library
+    }
 
-<dependency>
-  <groupId>com.jisx.log</groupId>
-  <artifactId>JLog</artifactId>
-  <version>1.0.0</version>
-  <type>pom</type>
-</dependency>
+    <dependency>
+      <groupId>com.jisx.log</groupId>
+      <artifactId>JLog</artifactId>
+      <version>1.0.0</version>
+      <type>pom</type>
+    </dependency>

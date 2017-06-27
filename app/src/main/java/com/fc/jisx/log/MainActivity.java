@@ -1,15 +1,14 @@
 package com.fc.jisx.log;
 
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.fc.jisx.jlog.JBuilder;
 import com.fc.jisx.jlog.JLog;
+import com.fc.jisx.jlog.JLogLevel;
 import com.fc.jisx.jlog.RuntimeType;
 
 public class MainActivity extends AppCompatActivity {
@@ -82,8 +81,9 @@ public class MainActivity extends AppCompatActivity {
     public void logWriteFile(View view) {
         JBuilder jBuilder = new JBuilder();
         jBuilder.setRuntimeType(RuntimeType.ANDROID);
-        jBuilder.setWriteToFile(!flag);
-        flag = !flag;
+        jBuilder.setTag("main");
+        jBuilder.setJLogLevelToFile(JLogLevel.WARN);
+        jBuilder.setWriteToFile(true);
         jBuilder.setParentFile(Environment.getExternalStorageDirectory());
         jBuilder.setFileName("test.txt");
         JLog.setBuilder(jBuilder);

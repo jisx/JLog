@@ -11,7 +11,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -118,7 +117,7 @@ public abstract class BaseLog implements Print, ParseToString {
         if (mBuilder.isWriteToFile()
                 && mBuilder.getParentFile() != null
                 && mBuilder.getFileName() != null
-                && mBuilder.getJLogLevel().getLevel() <= logLevel.getLevel())
+                && mBuilder.getJLogLevelToFile().getLevel() <= logLevel.getLevel())
             saveToFile(logLevel, tag, mBuilder.getParentFile(), mBuilder.getFileName(), sub);
 
 
