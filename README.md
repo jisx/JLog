@@ -42,5 +42,14 @@ BaseLog 的wrapperContent  中 33行的代码的意思可以理解为，代码�
 
 
 记得在LogFactory中注册一下自定义的log
-    
-    
+
+gradle：
+    compile 'com.jisx.log:JLog:1.0.0'
+
+maven:
+    <dependency>
+        <groupId>com.jisx.log</groupId>
+        <artifactId>JLog</artifactId>
+        <version>1.0.0</version>
+        <type>pom</type>
+    </dependency>
