@@ -23,41 +23,40 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void logI(View view) {
-        JLog.i("打印测试");
+        JLog.i("xxx","打印测试");
     }
 
     public void logV(View view) {
 
-        JLog.v("打印测试");
+        JLog.v("xxx","打印测试");
     }
 
     public void logD(View view) {
 
-        JLog.d("打印测试");
+        JLog.d("xxx","打印测试");
     }
 
     public void logW(View view) {
-        JLog.w("打印测试");
+        JLog.w("xxx","打印测试");
 
     }
 
     public void logE(View view) {
-        JLog.e("打印测试");
+        JLog.e("xxx","打印测试");
 
     }
 
     public void logFile(View view) {
-        JLog.d(this.getClass().getName(), "打印测试");
 
     }
 
     public void logJson(View view) {
-        JLog.e(this.getClass().getName(), "[{\"CityId\":18,\"CityName\":\"西安\",\"ProvinceId\":27,\"CityOrder\":1},{\"CityId\":53,\"CityName\":\"广州\",\"ProvinceId\":27,\"CityOrder\":1}]");
+        JLog.json("[{\"CityId\":18,\"CityName\":\"西安\",\"ProvinceId\":27,\"CityOrder\":1},{\"CityId\":53,\"CityName\":\"广州\",\"ProvinceId\":27,\"CityOrder\":1}]");
 
     }
 
     public void logXml(View view) {
-        JLog.d("<?xml version='1.0' encoding='UTF-8'?>" +
+        JLog.xml("<?xml version='1.0' encoding='UTF-8'?>" +
                 "<SMSMSGRECEIVES>" +
                 "<SMSMSGRECEIVE>" +
                 "<MSGID>2014062940010629110513337600</MSGID>" +
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         jBuilder.setWriteToFile(!jBuilder.isWriteToFile());
         jBuilder.setParentFile(Environment.getExternalStorageDirectory());
         jBuilder.setFileName("test.txt");
-
         JLog.setBuilder(jBuilder);
 
         ((TextView) view).setText(jBuilder.isWriteToFile() ? "可以写到文件" : "不可以写到文件");

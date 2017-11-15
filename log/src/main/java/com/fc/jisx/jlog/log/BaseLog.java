@@ -2,9 +2,11 @@ package com.fc.jisx.jlog.log;
 
 import android.util.Log;
 
+import com.fc.jisx.jlog.DateType;
+import com.fc.jisx.jlog.DateUtils;
 import com.fc.jisx.jlog.JBuilder;
+import com.fc.jisx.jlog.JLog;
 import com.fc.jisx.jlog.JLogLevel;
-import com.fc.jisx.jlog.model.IsSelfType;
 import com.fc.jisx.jlog.model.ParseToString;
 import com.fc.jisx.jlog.model.Print;
 
@@ -12,22 +14,21 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Created by zhaokaiqiang on 15/11/18.
  */
-public abstract class BaseLog implements Print, ParseToString, IsSelfType {
+public abstract class BaseLog implements Print, ParseToString {
 
     private static final String SUFFIX = ".java";
 
-    private JBuilder mBuilder;
+    private static JBuilder mBuilder = JLog.getBuilder();
 
-    public BaseLog(JBuilder builder) {
-        mBuilder = builder;
-    }
 
     public int getStackTraceIndex(String tag) {
         return tag == null ? 7 : 6;
@@ -71,13 +72,21 @@ public abstract class BaseLog implements Print, ParseToString, IsSelfType {
     @Override
     public void print(JLogLevel jLogLevel, String tag, Object object) {
 
+        mBuilder = JLog.getBuilder();
+
         int index = 0;
+
         String msg = parseToString(object);
+
         int length = msg.length();
+
+        //获取打印最大长度
         int maxLength = mBuilder.getMaxLength();
+
         int countOfSub = length / maxLength;
 
         String[] strings = wrapperContent(getStackTraceIndex(tag));
+
         if (countOfSub > 0) {
             String sub;
             for (int i = 0; i < countOfSub; i++) {
@@ -97,7 +106,7 @@ public abstract class BaseLog implements Print, ParseToString, IsSelfType {
 
     public String getTag(String tag, String classTag) {
         if (tag == null) {
-            if (mBuilder.getTag() != null && !"".equals(mBuilder.getTag())) {
+            if (mBuilder.getTag() != null) {
                 return mBuilder.getTag();
             } else {
                 return classTag;
@@ -117,11 +126,9 @@ public abstract class BaseLog implements Print, ParseToString, IsSelfType {
                 break;
         }
 
-        if (mBuilder.isWriteToFile()
-                && mBuilder.getParentFile() != null
-                && mBuilder.getFileName() != null
-                && mBuilder.getJLogLevelToFile().getLevel() <= logLevel.getLevel())
+        if (mBuilder.isWriteToFile() && mBuilder.getJLogLevelToFile().getLevel() <= logLevel.getLevel()) {
             saveToFile(logLevel, tag, mBuilder.getParentFile(), mBuilder.getFileName(), sub);
+        }
 
 
     }
@@ -131,7 +138,7 @@ public abstract class BaseLog implements Print, ParseToString, IsSelfType {
             try {
                 File file = new File(parentFile, fileName);
                 PrintStream p = new PrintStream(new BufferedOutputStream(new FileOutputStream(file, true)), true, "UTF-8");
-                p.write((sub + "\n").getBytes("UTF-8"));
+                p.write((DateUtils.getCurrentDate(DateType.N_YMdHms) + sub + "\n").getBytes("UTF-8"));
                 p.close();
             } catch (Throwable e) {
                 print(logLevel, tag, "write to logfile error" + e.getMessage());
@@ -174,15 +181,6 @@ public abstract class BaseLog implements Print, ParseToString, IsSelfType {
             logger.addHandler(consoleHandler);
         }
         logger.log(Level.parse(type.toString()), sub);
-    }
-
-    /**
-     * 为了更新这个对象
-     *
-     * @param builder 里面放具体的参数
-     */
-    public void setBuilder(JBuilder builder) {
-        mBuilder = builder;
     }
 
 }

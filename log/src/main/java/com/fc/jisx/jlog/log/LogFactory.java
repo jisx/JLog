@@ -1,8 +1,6 @@
 package com.fc.jisx.jlog.log;
 
 
-import com.fc.jisx.jlog.JBuilder;
-import com.fc.jisx.jlog.JLog;
 import com.fc.jisx.jlog.JLogType;
 
 import java.util.HashMap;
@@ -13,37 +11,21 @@ import java.util.HashMap;
 
 public enum LogFactory {
 
-    ;
+    INSTANCE {
+        @Override
+        public BaseLog getLog(JLogType type) {
+            return log.get(type);
+        }
+    };
 
-    private static HashMap<JLogType, BaseLog> log;
+    public abstract BaseLog getLog(JLogType type);
 
-    static BaseLog baseLog;
+    private static HashMap<JLogType, BaseLog> log = new HashMap<>();
 
     static {
-        log = new HashMap<>();
-        log.put(JLogType.JSON, new JsonLog(new JBuilder()));
-        log.put(JLogType.TEXT, new TextLog(new JBuilder()));
-        log.put(JLogType.XML, new XmlLog(new JBuilder()));
+        log.put(JLogType.JSON, new JsonLog());
+        log.put(JLogType.TEXT, new TextLog());
+        log.put(JLogType.XML, new XmlLog());
     }
 
-    public static BaseLog create(Object object, JBuilder builder) {
-        baseLog = log.get(JLogType.JSON);
-
-        if (log.get(JLogType.JSON).isSelfType(object)) {
-            baseLog.setBuilder(builder);
-            return baseLog;
-        }
-
-        baseLog = log.get(JLogType.XML);
-
-        if (log.get(JLogType.XML).isSelfType(object)) {
-            baseLog.setBuilder(builder);
-            return baseLog;
-        }
-
-        baseLog = log.get(JLogType.TEXT);
-
-        baseLog.setBuilder(builder);
-        return baseLog;
-    }
 }

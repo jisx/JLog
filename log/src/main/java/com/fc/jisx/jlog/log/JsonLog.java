@@ -1,19 +1,9 @@
 package com.fc.jisx.jlog.log;
 
-import com.fc.jisx.jlog.JBuilder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * Created by zhaokaiqiang on 15/11/18.
  */
 public class JsonLog extends BaseLog {
-
-    public JsonLog(JBuilder builder) {
-        super(builder);
-    }
 
     @Override
     public String parseToString(Object object) {
@@ -66,19 +56,5 @@ public class JsonLog extends BaseLog {
             levelStr.append("\t");
         }
         return levelStr.toString();
-    }
-
-    @Override
-    public boolean isSelfType(Object value) {
-        try {
-            new JSONObject(value.toString());
-        } catch (Exception e) {
-            try {
-                new JSONArray(value.toString());
-            } catch (JSONException e1) {
-                return false;
-            }
-        }
-        return true;
     }
 }

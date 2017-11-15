@@ -16,15 +16,7 @@ public enum JLog {
     }
 
     public static void v(String tag, Object object) {
-        printLog(JLogLevel.VERBOSE, tag, object);
-    }
-
-    public static void i(Object object) {
-        i(null, object);
-    }
-
-    public static void i(String tag, Object object) {
-        printLog(JLogLevel.INFO, tag, object);
+        printLog(JLogLevel.VERBOSE, JLogType.TEXT, tag, object);
     }
 
     public static void d(Object object) {
@@ -32,7 +24,15 @@ public enum JLog {
     }
 
     public static void d(String tag, Object object) {
-        printLog(JLogLevel.DEBUG, tag, object);
+        printLog(JLogLevel.DEBUG, JLogType.TEXT, tag, object);
+    }
+
+    public static void i(Object object) {
+        i(null, object);
+    }
+
+    public static void i(String tag, Object object) {
+        printLog(JLogLevel.INFO, JLogType.TEXT, tag, object);
     }
 
     public static void w(Object object) {
@@ -40,7 +40,7 @@ public enum JLog {
     }
 
     public static void w(String tag, Object object) {
-        printLog(JLogLevel.WARN, tag, object);
+        printLog(JLogLevel.WARN, JLogType.TEXT, tag, object);
     }
 
     public static void e(Object object) {
@@ -48,16 +48,32 @@ public enum JLog {
     }
 
     public static void e(String tag, Object object) {
-        printLog(JLogLevel.ERROR, tag, object);
+        printLog(JLogLevel.ERROR, JLogType.TEXT, tag, object);
     }
 
-    private static void printLog(JLogLevel logLevel, String tag, Object object) {
+    public static void json(Object object) {
+        json(null, object);
+    }
+
+    public static void json(String tag, Object object) {
+        printLog(JLogLevel.DEBUG, JLogType.JSON, tag, object);
+    }
+
+    public static void xml(Object object) {
+        xml(null, object);
+    }
+
+    public static void xml(String tag, Object object) {
+        printLog(JLogLevel.DEBUG, JLogType.XML, tag, object);
+    }
+
+    private static void printLog(JLogLevel logLevel, JLogType jLogType, String tag, Object object) {
         if (mBuilder == null) {
             mBuilder = new JBuilder();
         }
 
         if (mBuilder.isShowLog()) {
-            LogFactory.create(object, mBuilder).print(logLevel, tag, object);
+            LogFactory.INSTANCE.getLog(jLogType).print(logLevel, tag, object);
         }
     }
 
@@ -65,5 +81,7 @@ public enum JLog {
         mBuilder = builder;
     }
 
-
+    public static JBuilder getBuilder() {
+        return mBuilder;
+    }
 }

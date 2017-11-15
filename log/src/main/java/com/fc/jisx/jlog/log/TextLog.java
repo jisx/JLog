@@ -1,11 +1,10 @@
 package com.fc.jisx.jlog.log;
 
 
-import com.fc.jisx.jlog.JBuilder;
-import com.fc.jisx.jlog.JLog;
-import com.fc.jisx.jlog.JLogLevel;
-import com.fc.jisx.jlog.JLogUtil;
-import com.fc.jisx.jlog.RuntimeType;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
 
 /**
  * Created by jisx on 2017/6/21.
@@ -13,17 +12,25 @@ import com.fc.jisx.jlog.RuntimeType;
 
 public class TextLog extends BaseLog {
 
-    public TextLog(JBuilder builder) {
-        super(builder);
-    }
-
     @Override
     public String parseToString(Object object) {
-        return JLogUtil.parseObjectToString(object);
+        return parseObjectToString(object);
     }
 
-    @Override
-    public boolean isSelfType(Object value) {
-        return true;
+
+    public String parseThrowableToString(Throwable t) {
+        Writer result = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(result);
+        t.printStackTrace(printWriter);
+        return result.toString();
     }
+
+    public String parseObjectToString(Object object) {
+        if (object instanceof Throwable) {
+            return parseThrowableToString((Throwable) object);
+        } else {
+            return object.toString();
+        }
+    }
+
 }
