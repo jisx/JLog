@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.fc.jisx.jlog.JBuilder;
 import com.fc.jisx.jlog.JLogLevel;
+import com.fc.jisx.jlog.model.IsSelfType;
 import com.fc.jisx.jlog.model.ParseToString;
 import com.fc.jisx.jlog.model.Print;
 
@@ -11,13 +12,14 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Created by zhaokaiqiang on 15/11/18.
  */
-public abstract class BaseLog implements Print, ParseToString {
+public abstract class BaseLog implements Print, ParseToString, IsSelfType {
 
     private static final String SUFFIX = ".java";
 
@@ -33,6 +35,7 @@ public abstract class BaseLog implements Print, ParseToString {
 
     /**
      * 获取打印所在的类、行数和方法
+     *
      * @param index 下标
      * @return 返回类名、方法和所在的行数
      */
@@ -96,7 +99,7 @@ public abstract class BaseLog implements Print, ParseToString {
         if (tag == null) {
             if (mBuilder.getTag() != null && !"".equals(mBuilder.getTag())) {
                 return mBuilder.getTag();
-            }else {
+            } else {
                 return classTag;
             }
         }
@@ -131,11 +134,11 @@ public abstract class BaseLog implements Print, ParseToString {
                 p.write((sub + "\n").getBytes("UTF-8"));
                 p.close();
             } catch (Throwable e) {
-                print(JLogLevel.ERROR, tag, "write to logfile error" + e.getMessage());
+                print(logLevel, tag, "write to logfile error" + e.getMessage());
             }
 
         } else {
-            print(JLogLevel.ERROR, tag, "parentFile(logFile) not exist,create file first");
+            print(logLevel, tag, "parentFile(logFile) not exist,create file first");
         }
     }
 
@@ -165,14 +168,21 @@ public abstract class BaseLog implements Print, ParseToString {
     private static void printJavaText(JLogLevel type, String tag, String sub) {
         Logger logger = Logger.getLogger(tag);
         logger.setLevel(Level.ALL);
+        if (logger.getHandlers().length < 1) {
+            ConsoleHandler consoleHandler = new ConsoleHandler();
+            consoleHandler.setLevel(Level.ALL);
+            logger.addHandler(consoleHandler);
+        }
         logger.log(Level.parse(type.toString()), sub);
     }
 
     /**
      * 为了更新这个对象
+     *
      * @param builder 里面放具体的参数
      */
     public void setBuilder(JBuilder builder) {
         mBuilder = builder;
     }
+
 }

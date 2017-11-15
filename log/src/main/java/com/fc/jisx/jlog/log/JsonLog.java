@@ -2,6 +2,10 @@ package com.fc.jisx.jlog.log;
 
 import com.fc.jisx.jlog.JBuilder;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by zhaokaiqiang on 15/11/18.
  */
@@ -22,7 +26,7 @@ public class JsonLog extends BaseLog {
      * @param jsonStr json字符串
      * @return 返回格式化的字符串
      */
-    public static String formatJson(String jsonStr) {
+    public String formatJson(String jsonStr) {
         int level = 0;
         StringBuffer jsonForMatStr = new StringBuffer();
         for (int i = 0; i < jsonStr.length(); i++) {
@@ -56,7 +60,7 @@ public class JsonLog extends BaseLog {
 
     }
 
-    private static String getLevelStr(int level) {
+    private String getLevelStr(int level) {
         StringBuffer levelStr = new StringBuffer();
         for (int levelI = 0; levelI < level; levelI++) {
             levelStr.append("\t");
@@ -64,4 +68,17 @@ public class JsonLog extends BaseLog {
         return levelStr.toString();
     }
 
+    @Override
+    public boolean isSelfType(Object value) {
+        try {
+            new JSONObject(value.toString());
+        } catch (Exception e) {
+            try {
+                new JSONArray(value.toString());
+            } catch (JSONException e1) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -22,4 +22,8 @@ public class TextLog extends BaseLog {
         return JLogUtil.parseObjectToString(object);
     }
 
+    @Override
+    public boolean isSelfType(Object value) {
+        return true;
+    }
 }

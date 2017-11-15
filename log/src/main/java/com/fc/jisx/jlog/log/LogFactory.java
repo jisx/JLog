@@ -3,6 +3,7 @@ package com.fc.jisx.jlog.log;
 
 import com.fc.jisx.jlog.JBuilder;
 import com.fc.jisx.jlog.JLog;
+import com.fc.jisx.jlog.JLogType;
 
 import java.util.HashMap;
 
@@ -10,33 +11,39 @@ import java.util.HashMap;
  * Created by jisx on 2017/6/21.
  */
 
-public class LogFactory {
+public enum LogFactory {
 
-    private static HashMap<JLog, BaseLog> log;
+    ;
 
-    public static BaseLog create(JLog type, JBuilder builder) {
-        if (log == null)
-            log = new HashMap<>();
+    private static HashMap<JLogType, BaseLog> log;
 
-        if (log.get(type) == null) {
-            switch (type) {
-                case JSON:
-                    log.put(JLog.JSON, new JsonLog(builder));
-                    break;
+    static BaseLog baseLog;
 
-                case TEXT:
-                    log.put(JLog.TEXT, new TextLog(builder));
-                    break;
+    static {
+        log = new HashMap<>();
+        log.put(JLogType.JSON, new JsonLog(new JBuilder()));
+        log.put(JLogType.TEXT, new TextLog(new JBuilder()));
+        log.put(JLogType.XML, new XmlLog(new JBuilder()));
+    }
 
-                case XML:
-                    log.put(JLog.XML, new XmlLog(builder));
-                    break;
-            }
+    public static BaseLog create(Object object, JBuilder builder) {
+        baseLog = log.get(JLogType.JSON);
 
+        if (log.get(JLogType.JSON).isSelfType(object)) {
+            baseLog.setBuilder(builder);
+            return baseLog;
         }
 
-        log.get(type).setBuilder(builder);
+        baseLog = log.get(JLogType.XML);
 
-        return log.get(type);
+        if (log.get(JLogType.XML).isSelfType(object)) {
+            baseLog.setBuilder(builder);
+            return baseLog;
+        }
+
+        baseLog = log.get(JLogType.TEXT);
+
+        baseLog.setBuilder(builder);
+        return baseLog;
     }
 }
