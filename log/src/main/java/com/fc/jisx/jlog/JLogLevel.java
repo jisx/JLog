@@ -5,7 +5,7 @@ package com.fc.jisx.jlog;
  */
 
 public enum JLogLevel {
-    ALL("ALL", 0), VERBOSE("FINE", 1), DEBUG("CONFIG", 2), INFO("INFO", 3), WARN("WARNING", 4), ERROR("SEVERE", 5);
+    VERBOSE("FINE", 2), DEBUG("CONFIG", 3), INFO("INFO", 4), WARN("WARNING", 5), ERROR("SEVERE", 6);
 
     private String mName;
     private int mLevel;
@@ -23,4 +23,5 @@ public enum JLogLevel {
     public int getLevel() {
         return mLevel;
     }
+
 }

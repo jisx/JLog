@@ -6,7 +6,7 @@ android 日志
 
 使用：
         JBuilder jBuilder = new JBuilder();
-        jBuilder.setJLogLevelToFile(JLogLevelToFile.WARN);//设置打印到文件中的日志级别
+        jBuilder.setJLogLevelToFile(JLogToFileLevel.WARN);//设置打印到文件中的日志级别
         jBuilder.setTag("main");//设置全局的tag, 优先级别：指定tag>全局tag。如果两者都没有指定，则直接定位到打印语句所在的类
         jBuilder.setRuntimeType(RuntimeType.ANDROID);//设置在android环境下。有时候在android端使用java的mian方法，就需要切换成RuntimeType.JAVA环境
         jBuilder.setWriteToFile(true);//需要把日志写到log中

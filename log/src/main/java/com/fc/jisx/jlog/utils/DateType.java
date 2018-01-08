@@ -1,4 +1,4 @@
-package com.fc.jisx.jlog;
+package com.fc.jisx.jlog.utils;
 
 /**
  * 日期枚举类

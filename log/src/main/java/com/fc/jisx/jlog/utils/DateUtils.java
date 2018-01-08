@@ -1,4 +1,4 @@
-package com.fc.jisx.jlog;
+package com.fc.jisx.jlog.utils;
 
 import android.annotation.SuppressLint;
 
@@ -38,7 +38,7 @@ public class DateUtils {
      * 获取当前时间
      *
      * @param dateType 时间的类型
-     * @return
+     * @return 时间字符串
      */
     public static String getCurrentDate(DateType dateType) {
         Date now = new Date();
@@ -49,8 +49,8 @@ public class DateUtils {
     /**
      * 日期转换成字符串
      *
-     * @param date
-     * @return
+     * @param date 日期
+     * @return 时间字符串
      */
     public static String dateToStr(Date date) {
         return dateToStr(date, DateType.N_YMdHm);
@@ -59,9 +59,9 @@ public class DateUtils {
     /**
      * 日期转换成字符串
      *
-     * @param date
-     * @param dateType
-     * @return
+     * @param date     日期
+     * @param dateType 格式化
+     * @return 时间字符串
      */
     public static String dateToStr(Date date, DateType dateType) {
         SimpleDateFormat format = new SimpleDateFormat(dateType.getType());
@@ -71,23 +71,23 @@ public class DateUtils {
     /**
      * 日期字符串转Data类型
      *
-     * @param str
-     * @return
+     * @param str 时间字符串
+     * @return 日期
      */
     public static Date strToDate(String str) {
-        return strToDate(DateType.N_YMdHm.getType());
+        return strToDate(str, DateType.N_YMdHm);
     }
 
     /**
      * 日期字符串转Data类型
      *
-     * @param str
-     * @param dateType
+     * @param str      时间字符串
+     * @param dateType 类型
      * @return Date or null
      */
     public static Date strToDate(String str, DateType dateType) {
         SimpleDateFormat format = new SimpleDateFormat(dateType.getType());
-        Date date = new Date();
+        Date date;
         try {
             date = format.parse(str);
             return date;
@@ -171,8 +171,8 @@ public class DateUtils {
     /**
      * 获取指定日期是星期几
      *
-     * @param date
-     * @return
+     * @param date 日期
+     * @return 星期几
      */
     public static int getWeek(Date date) {
         String[] weeks = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
@@ -189,6 +189,7 @@ public class DateUtils {
      * 时间转化为显示字符串
      *
      * @param timeStamp 单位为秒
+     * @return 时间字符串
      */
     public static String getTimeStr(long timeStamp) {
         if (timeStamp == 0) return "";
@@ -239,9 +240,9 @@ public class DateUtils {
     /**
      * 通过时间秒毫秒数判断两个时间的间隔
      *
-     * @param date1
-     * @param date2
-     * @return
+     * @param date1 日期
+     * @param date2 日期
+     * @return 时间间隔
      */
     public static int differentDaysByMillisecond(Date date1, Date date2) {
         int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
@@ -251,9 +252,9 @@ public class DateUtils {
     /**
      * 比较日期
      *
-     * @param date1
-     * @param date2
-     * @return date1 > date2  返回1
+     * @param date1 日期
+     * @param date2 日期
+     * @return date1 大于 date2  返回1
      */
     public static int compareDate(Date date1, Date date2) {
         if (date1.getTime() > date2.getTime()) {
@@ -268,7 +269,8 @@ public class DateUtils {
     /**
      * 获取日期的0点
      *
-     * @return
+     * @param date 日期
+     * @return 日期
      */
     public static Date getStartDay(Date date) {
         Calendar cal = Calendar.getInstance();
@@ -283,7 +285,8 @@ public class DateUtils {
     /**
      * 获取日期的23点59分59秒
      *
-     * @return
+     * @param date 日期
+     * @return 日期
      */
     public static Date getEndDay(Date date) {
         Calendar cal = Calendar.getInstance();
@@ -298,7 +301,7 @@ public class DateUtils {
     /**
      * 得到本月的第一天
      *
-     * @return
+     * @return 日期
      */
     public static Date getMonthFirstDay() {
         Calendar calendar = Calendar.getInstance();
@@ -306,6 +309,18 @@ public class DateUtils {
                 .getActualMinimum(Calendar.DAY_OF_MONTH));
 
         return calendar.getTime();
+    }
+
+    /**
+     * 获取几天前的日期
+     *
+     * @param day 天数
+     * @return 日期
+     */
+    public static Date getDayBefore(int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -day);
+        return cal.getTime();
     }
 
 }

@@ -1,16 +1,13 @@
 package com.fc.jisx.log;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
-import com.fc.jisx.jlog.JBuilder;
 import com.fc.jisx.jlog.JLog;
-import com.fc.jisx.jlog.JLogLevel;
-import com.fc.jisx.jlog.RuntimeType;
+import com.fc.jisx.jlog.LogConfiguration;
+import com.fc.jisx.jlog.printer.config.FileConfig;
+import com.fc.jisx.jlog.utils.SDCardUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,31 +15,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        JLog.init();
+
+        JLog.init(new LogConfiguration.Builder().file(new FileConfig(SDCardUtils.getSDPath(), 7, 1* 1024)).android().track().border().build());
 
     }
 
 
     public void logI(View view) {
-        JLog.i("xxx","打印测试");
+        JLog.i("xxx", "打印测试");
     }
 
     public void logV(View view) {
 
-        JLog.v("xxx","打印测试");
+        JLog.v("xxx", "打印测试");
     }
 
     public void logD(View view) {
 
-        JLog.d("xxx","打印测试");
+        JLog.d("xxx", "打印测试");
     }
 
     public void logW(View view) {
-        JLog.w("xxx","打印测试");
+        JLog.w("xxx", "打印测试");
 
     }
 
     public void logE(View view) {
-        JLog.e("xxx","打印测试");
+        JLog.e("xxx", "打印测试");
 
     }
 
@@ -78,20 +78,15 @@ public class MainActivity extends AppCompatActivity {
 
     boolean flag = false;
 
-    JBuilder jBuilder;
-
     public void logWriteFile(View view) {
-        if (jBuilder == null)
-            jBuilder = new JBuilder();
-        jBuilder.setRuntimeType(RuntimeType.ANDROID);
-        jBuilder.setTag("main");
-        jBuilder.setJLogLevelToFile(JLogLevel.WARN);
-        jBuilder.setWriteToFile(!jBuilder.isWriteToFile());
-        jBuilder.setParentFile(Environment.getExternalStorageDirectory());
-        jBuilder.setFileName("test.txt");
-        JLog.setBuilder(jBuilder);
-
-        ((TextView) view).setText(jBuilder.isWriteToFile() ? "可以写到文件" : "不可以写到文件");
+//        if (jBuilder == null)
+//            jBuilder = new JBuilder();
+//        jBuilder.setRuntimeType(RuntimeType.ANDROID);
+//        jBuilder.setWriteToFile(!jBuilder.isWriteToFile());
+////        jBuilder.setLogPath(Environment.getExternalStorageDirectory().getPath());
+//        jBuilder.setFileName("test.txt");
+//        JLog.setBuilder(jBuilder);
+//        ((TextView) view).setText(jBuilder.isWriteToFile() ? "可以写到文件" : "不可以写到文件");
     }
 
 }
