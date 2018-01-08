@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 //        JLog.init();
 
-        JLog.init(new LogConfiguration.Builder().file(new FileConfig(SDCardUtils.getSDPath(), 7, 1* 1024)).android().track().border().build());
+        JLog.init(new LogConfiguration.Builder().android().build());
 
     }
 
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void logW(View view) {
         JLog.w("xxx", "打印测试");
-
     }
 
     public void logE(View view) {
@@ -79,14 +78,6 @@ public class MainActivity extends AppCompatActivity {
     boolean flag = false;
 
     public void logWriteFile(View view) {
-//        if (jBuilder == null)
-//            jBuilder = new JBuilder();
-//        jBuilder.setRuntimeType(RuntimeType.ANDROID);
-//        jBuilder.setWriteToFile(!jBuilder.isWriteToFile());
-////        jBuilder.setLogPath(Environment.getExternalStorageDirectory().getPath());
-//        jBuilder.setFileName("test.txt");
-//        JLog.setBuilder(jBuilder);
-//        ((TextView) view).setText(jBuilder.isWriteToFile() ? "可以写到文件" : "不可以写到文件");
     }
 
 }

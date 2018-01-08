@@ -72,6 +72,10 @@ public class JLog {
         printLog(JLogLevel.DEBUG, FormatterType.JSON, tag, object);
     }
 
+    public static void json(JLogLevel logLevel, String tag, String object) {
+        printLog(logLevel, FormatterType.JSON, tag, object);
+    }
+
     public static void xml(String object) {
         xml(null, object);
     }
@@ -80,10 +84,19 @@ public class JLog {
         printLog(JLogLevel.DEBUG, FormatterType.XML, tag, object);
     }
 
+    public static void xml(JLogLevel logLevel, String tag, String object) {
+        printLog(logLevel, FormatterType.XML, tag, object);
+    }
+
     private static void printLog(JLogLevel logLevel, FormatterType jLogType, String tag, Object object) {
 
         if (sLogConfiguration == null) {
             throw new IllegalStateException("日志工具还未初始化");
+        }
+
+        //打印的日志级别判断
+        if (sLogConfiguration.logLevel >= logLevel.getLevel()) {
+            return;
         }
 
         for (Class aClass : sLogConfiguration.mFormatterHashMap.keySet()) {
@@ -92,12 +105,12 @@ public class JLog {
                 String message = sLogConfiguration.mFormatterHashMap.get(aClass).format(object, jLogType);
 
                 //修饰打印出来的效果
-                for (Decorate decorate : sLogConfiguration.mDecorateList) {
+                for (Decorate decorate : sLogConfiguration.mDecorateList.values()) {
                     message = decorate.handle(message);
                 }
 
                 //打印
-                for (Printer printer : sLogConfiguration.mPrinterList) {
+                for (Printer printer : sLogConfiguration.mPrinterList.values()) {
                     printer.println(logLevel.getLevel(), tag == null ? sLogConfiguration.tag : tag, message);
                 }
 

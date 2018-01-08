@@ -8,11 +8,9 @@ import java.io.Writer;
 
 
 /**
- * 格式化异常对象
+ * 格式化异常，把异常信息转换成字符串
  *
  * @author jisx
- * @date Created in 15:50 2018/1/5
- * @modify By:
  */
 public class ThrowFormatter extends Formatter<Throwable> {
 

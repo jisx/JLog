@@ -17,10 +17,14 @@
 package com.fc.jisx.jlog;
 
 
+import com.fc.jisx.jlog.decorate.BorderDecorate;
 import com.fc.jisx.jlog.decorate.Decorate;
-import com.fc.jisx.jlog.decorate.DecorateFactory;
-import com.fc.jisx.jlog.formatter.FormatFactory;
+import com.fc.jisx.jlog.decorate.DecorateSort;
+import com.fc.jisx.jlog.decorate.TrackDecorate;
+import com.fc.jisx.jlog.formatter.DefaultFormatter;
 import com.fc.jisx.jlog.formatter.Formatter;
+import com.fc.jisx.jlog.formatter.StringFormatter;
+import com.fc.jisx.jlog.formatter.ThrowFormatter;
 import com.fc.jisx.jlog.printer.AndroidPrinter;
 import com.fc.jisx.jlog.printer.ConsolePrinter;
 import com.fc.jisx.jlog.printer.FilePrinter;
@@ -30,11 +34,9 @@ import com.fc.jisx.jlog.printer.config.FileConfig;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Use the {@link Builder} to construct a {@link LogConfiguration} object.
@@ -49,28 +51,17 @@ public class LogConfiguration {
      */
     public final String tag;
     /**
-     * 文件保存路径
-     */
-    private String path;
-    /**
-     * 最大保存天数
-     */
-    private int saveDays = 7;
-
-    /**
-     * 文件大小的上限
-     */
-    private long maxFileSize = 5 * 1024 * 1024;
-    /**
      * 格式化类的集合
      */
     public final Map<Class, Formatter> mFormatterHashMap;
     /**
      * 打印对象集合
      */
-    public final List<Printer> mPrinterList;
-
-    public final List<Decorate> mDecorateList;
+    public final Map<Class, Printer> mPrinterList;
+    /**
+     * 修饰字符串对象集合
+     */
+    public final Map<Integer, Decorate> mDecorateList;
 
     private LogConfiguration(Builder builder) {
         logLevel = builder.logLevel;
@@ -101,23 +92,23 @@ public class LogConfiguration {
          */
         private String tag = DEFAULT_TAG;
         /**
-         * 格式化类的集合
+         * 格式化类的集合 并加入了排序
          */
         private Map<Class, Formatter> mFormatterHashMap = new HashMap<>();
         /**
          * 打印的对象集合
          */
-        private List<Printer> mPrinterList = new ArrayList<>();
+        private Map<Class, Printer> mPrinterList = new HashMap<>();
         /**
          * 修饰字符串对象集合
          */
-        private List<Decorate> mDecorateList = new ArrayList<>();
+        private Map<Integer, Decorate> mDecorateList = new TreeMap(new DecorateSort());
 
         public Builder() {
             //预装的格式化类
-            this.mFormatterHashMap.put(String.class, FormatFactory.getStringFormatter());
-            this.mFormatterHashMap.put(Throwable.class, FormatFactory.getThrowFormatter());
-            this.mFormatterHashMap.put(Object.class, FormatFactory.getDefaultFormatter());
+            this.mFormatterHashMap.put(String.class, new StringFormatter());
+            this.mFormatterHashMap.put(Throwable.class, new ThrowFormatter());
+            this.mFormatterHashMap.put(Object.class, new DefaultFormatter());
         }
 
         public Builder(LogConfiguration logConfiguration) {
@@ -133,8 +124,8 @@ public class LogConfiguration {
         /**
          * 设置打印的日志级别
          *
-         * @param logLevel
-         * @return
+         * @param logLevel 日志级别
+         * @return 返回Builder对象
          */
         public Builder logLevel(int logLevel) {
             this.logLevel = logLevel;
@@ -144,8 +135,8 @@ public class LogConfiguration {
         /**
          * 设置TAG
          *
-         * @param tag
-         * @return
+         * @param tag 标记
+         * @return 返回Builder对象
          */
         public Builder tag(String tag) {
             this.tag = tag;
@@ -155,22 +146,34 @@ public class LogConfiguration {
         /**
          * 设置边框
          *
-         * @return
+         * @return 返回Builder对象
          */
         public Builder border() {
-            if (!this.mDecorateList.contains(DecorateFactory.getBorderDecorate()))
-                this.mDecorateList.add(DecorateFactory.getBorderDecorate());
+            BorderDecorate borderDecorate = new BorderDecorate();
+            this.mDecorateList.put(borderDecorate.getSort(), borderDecorate);
             return this;
         }
 
         /**
          * 是否显示打印日志所在的代码行数（可以通过点击行数直接定位到打印的代码）
          *
-         * @return
+         * @return 返回Builder对象
          */
         public Builder track() {
-            if (!this.mDecorateList.contains(DecorateFactory.getTrackDecorate()))
-                this.mDecorateList.add(DecorateFactory.getTrackDecorate());
+            TrackDecorate trackDecorate = new TrackDecorate();
+            this.mDecorateList.put(trackDecorate.getSort(), trackDecorate);
+            return this;
+        }
+
+        /**
+         * 修饰需要打印的message
+         * @param decorates 修饰字符串的对象集合
+         * @return 返回Builder对象
+         */
+        public Builder decorate(Decorate... decorates) {
+            for (Decorate decorate : decorates) {
+                this.mDecorateList.put(decorate.getSort(), decorate);
+            }
             return this;
         }
 
@@ -184,41 +187,34 @@ public class LogConfiguration {
         }
 
         public Builder android() {
-            this.mPrinterList.add(new AndroidPrinter());
+            this.mPrinterList.put(AndroidPrinter.class, new AndroidPrinter());
             return this;
         }
 
         public Builder console() {
-            this.mPrinterList.add(new ConsolePrinter());
+            this.mPrinterList.put(ConsolePrinter.class, new ConsolePrinter());
             return this;
         }
 
 
         public Builder remote(String url) {
-            this.mPrinterList.add(new RemotePrinter());
+            this.mPrinterList.put(RemotePrinter.class, new RemotePrinter());
             return this;
         }
 
 
         public Builder file(FileConfig config) {
-            this.mPrinterList.add(new FilePrinter(config));
+            this.mPrinterList.put(FilePrinter.class, new FilePrinter(config));
             return this;
         }
 
         /**
          * 这里检查去重，防止打印多次
+         *
+         * @return 返回Builder对象
          * @see Printer#equals(Object)
-         * @return
          */
         public LogConfiguration build() {
-            if (this.mPrinterList.size() == 0) {
-                this.mPrinterList.add(new ConsolePrinter());
-            }
-
-            HashSet hashSet = new HashSet(mPrinterList);
-            mPrinterList.clear();
-            mPrinterList.addAll(hashSet);
-
             return new LogConfiguration(this);
         }
 

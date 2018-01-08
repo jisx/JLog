@@ -19,18 +19,19 @@ package com.fc.jisx.jlog.formatter;
 import com.fc.jisx.jlog.FormatterType;
 
 /**
- * A formatter is used for format the data that is not a string, or that is a string but not well
- * formatted, we should format the data to a well formatted string so printers can print them.
+ * 把未知类型转换成字符串，用于打印的字符串
+ * <p>
+ * 一定要表明泛型的类型，因为默认是 {@link Object} 类型
  *
- * @param <T> the type of the data
+ * @param <T> 数据的类型
  */
 public abstract class Formatter<T> {
 
     /**
      * Format the data to a readable and loggable string.
      *
-     * @param data the data to format
-     * @param formatterType
+     * @param data          the data to format
+     * @param formatterType 格式枚举类型
      * @return the formatted string data
      */
     public String format(T data, FormatterType formatterType) {

@@ -6,12 +6,9 @@ import android.annotation.SuppressLint;
  * 日志文字的边框处理
  *
  * @author jisx
- * @date Created in 2018/1/6
- * @modify By:
- *
- * <br>╔════════════════════════════════════════════════════════════════════════════
- * <br>║String segment 1
- * <br>╚════════════════════════════════════════════════════════════════════════════
+ *         <br>╔════════════════════════════════════════════════════════════════════════════
+ *         <br>║String segment 1
+ *         <br>╚════════════════════════════════════════════════════════════════════════════
  */
 public class BorderDecorate extends Decorate {
 
@@ -44,6 +41,11 @@ public class BorderDecorate extends Decorate {
         msgBuilder.append(appendVerticalBorder(message));
         msgBuilder.append(lineSeparator()).append(BOTTOM_HORIZONTAL_BORDER);
         return msgBuilder.toString();
+    }
+
+    @Override
+    public int getSort() {
+        return 98;
     }
 
     /**

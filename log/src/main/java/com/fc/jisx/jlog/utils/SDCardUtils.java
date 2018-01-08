@@ -14,6 +14,8 @@ import java.io.InputStream;
 public class SDCardUtils {
     /**
      * 获取SD卡的状态
+     *
+     * @return 返回sd卡的状态
      */
     public static String getState() {
         return Environment.getExternalStorageState();
@@ -88,10 +90,10 @@ public class SDCardUtils {
     /**
      * 从assets复制文件至sd卡中
      *
-     * @param context
+     * @param context  上下文
      * @param fileName assets文件的名字
      * @param path     sd卡的路径
-     * @return
+     * @return 文件拷贝结果
      */
     public static boolean copyFileFromAssets(Context context, String fileName, String path) {
 

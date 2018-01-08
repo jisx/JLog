@@ -1,13 +1,12 @@
 package com.fc.jisx.jlog.printer.config;
 
+import com.fc.jisx.jlog.JLogLevel;
 import com.fc.jisx.jlog.printer.PrinterConfig;
 
 /**
  * File description.
  *
  * @author jisx
- * @date Created in 2018/1/7
- * @modify By:
  */
 public class FileConfig implements PrinterConfig{
 
@@ -23,35 +22,32 @@ public class FileConfig implements PrinterConfig{
      * 文件大小的上限
      */
     private long maxFileSize = 5 * 1024 * 1024;
+    /**
+     * 文件大小的上限
+     */
+    private JLogLevel mLogLevel = JLogLevel.DEBUG;
 
 
-    public FileConfig(String path, int saveDays, long maxFileSize) {
+    public FileConfig(String path, int saveDays, long maxFileSize,JLogLevel mLogLevel) {
         this.path = path;
         this.saveDays = saveDays;
         this.maxFileSize = maxFileSize;
+        this.mLogLevel = mLogLevel;
     }
 
     public String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public int getSaveDays() {
         return saveDays;
-    }
-
-    public void setSaveDays(int saveDays) {
-        this.saveDays = saveDays;
     }
 
     public long getMaxFileSize() {
         return maxFileSize;
     }
 
-    public void setMaxFileSize(long maxFileSize) {
-        this.maxFileSize = maxFileSize;
+    public JLogLevel getLogLevel() {
+        return mLogLevel;
     }
 }

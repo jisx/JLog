@@ -68,7 +68,7 @@ public class FilePrinter extends Printer {
 
     @Override
     public void println(int logLevel, String tag, String msg) {
-        if (canWrite) {
+        if (canWrite && logLevel >= mFileConfig.getLogLevel().getLevel()) {
             checkFileSize();
             eService.execute(new FileWrite(msg, mFileConfig.getPath(), fileName));
         } else {
@@ -114,7 +114,7 @@ public class FilePrinter extends Printer {
                 if (name.length() > 10) {
                     String dateStr = name.substring(0, 10);
                     //如果是其他文件名也过来了，可能格式化成时间会报错，所以拦截一手异常。如果不能格式化成时间，那就放过这个文件
-                    Date date = DateUtils.strToDate(dateStr,DateType.N_YMD);
+                    Date date = DateUtils.strToDate(dateStr, DateType.N_YMD);
 
                     if (date == null) {
                         return false;

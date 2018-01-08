@@ -8,8 +8,6 @@ import java.io.IOException;
  * File description.
  *
  * @author jisx
- * @date Created in 2018/1/7
- * @modify By:
  */
 public class FileWrite implements Runnable {
 

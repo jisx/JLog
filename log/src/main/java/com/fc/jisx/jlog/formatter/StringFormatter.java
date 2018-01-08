@@ -3,8 +3,6 @@ package com.fc.jisx.jlog.formatter;
 import android.annotation.SuppressLint;
 
 import com.fc.jisx.jlog.FormatterType;
-import com.fc.jisx.jlog.formatter.FormatException;
-import com.fc.jisx.jlog.formatter.Formatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,8 +21,6 @@ import javax.xml.transform.stream.StreamSource;
  * File description.
  *
  * @author jisx
- * @date Created in ${T} 2018/1/5
- * @modify By:
  */
 public class StringFormatter extends Formatter<String> {
 
