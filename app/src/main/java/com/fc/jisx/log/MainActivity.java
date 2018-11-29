@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.fc.jisx.jlog.JLog;
+import com.fc.jisx.jlog.JLogLevel;
 import com.fc.jisx.jlog.LogConfiguration;
 import com.fc.jisx.jlog.printer.config.FileConfig;
 import com.fc.jisx.jlog.utils.SDCardUtils;
@@ -16,8 +17,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        JLog.init();
-
-        JLog.init(new LogConfiguration.Builder().android().build());
+        String s = "/test";
+        String path = SDCardUtils.getSDPath() + s;
+        JLog.init(new LogConfiguration.Builder().logLevel(JLogLevel.DEBUG.getLevel())
+                .file(new FileConfig(path,7,500000,JLogLevel.INFO)).android().build());
 
     }
 
