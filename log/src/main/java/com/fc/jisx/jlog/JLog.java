@@ -12,7 +12,7 @@ public class JLog {
     private static LogConfiguration sLogConfiguration;
 
     public static void init() {
-        sLogConfiguration = new LogConfiguration.Builder().build();
+        sLogConfiguration = new LogConfiguration.Builder().console().build();
     }
 
     public static void init(LogConfiguration logConfiguration) {
@@ -95,7 +95,7 @@ public class JLog {
         }
 
         //打印的日志级别判断
-        if (sLogConfiguration.logLevel >= logLevel.getLevel()) {
+        if (sLogConfiguration.logLevel > logLevel.getLevel()) {
             return;
         }
 

@@ -68,11 +68,14 @@ public class FilePrinter extends Printer {
 
     @Override
     public void println(int logLevel, String tag, String msg) {
-        if (canWrite && logLevel >= mFileConfig.getLogLevel().getLevel()) {
+        if(!canWrite){
+            System.out.println("文件路径 path=" + mFileConfig.getPath() + "不可用");
+            return;
+        }
+
+        if (logLevel >= mFileConfig.getLogLevel().getLevel()) {
             checkFileSize();
             eService.execute(new FileWrite(msg, mFileConfig.getPath(), fileName));
-        } else {
-            System.out.println("文件路径 path=" + mFileConfig.getPath() + "不可用");
         }
     }
 
@@ -140,6 +143,11 @@ public class FilePrinter extends Printer {
                 return false;
             }
         });
+
+        //防止没有读写权限
+        if(files == null){
+            return;
+        }
 
         for (File file1 : files) {
             file1.delete();
